@@ -10,18 +10,25 @@ import { Wish } from './wishes/entities/wish.entity';
 import { Wishlist } from './wishlists/entities/wishlist.entity';
 import { Offer } from './offers/entities/offer.entity';
 import { AuthModule } from './auth/auth.module';
-import { AuthController } from './auth/auth.controller';
 import { ConfigModule } from '@nestjs/config';
+
+const {
+  POSTGRESS_HOST = 'postgres',
+  POSTGRESS_PORT = '5432',
+  POSTGRES_DB = 'kupipodariday',
+  POSTGRES_USER = 'student',
+  POSTGRES_PASSWORD = 'student',
+} = process.env;
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5433,
-      username: 'student',
-      password: 'student',
-      database: 'kupipodariday',
+      host: POSTGRESS_HOST,
+      port: parseInt(POSTGRESS_PORT, 10),
+      username: POSTGRES_USER,
+      password: POSTGRES_PASSWORD,
+      database: POSTGRES_DB,
       entities: [User, Wish, Wishlist, Offer],
       synchronize: true,
     }),
