@@ -24,27 +24,17 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.usersService.findOne(id);
+  @Get('me')
+  async findMe(@Req() req) {
+    return await this.usersService.findOne(req.user.id);
   }
 
-  @Get(':username')
-  findOneByUsername(@Param('username') username: string) {
-    return this.usersService.findOneByUsername(username);
-  }
-
-  @Get(':me')
-  findMe(@Req() req) {
-    return req.user;
-  }
-
-  @Get(':me/wishes')
+  @Get('me/wishes')
   findMysWishes(@Req() req) {
     return this.usersService.findMysWishes(req.user.id);
   }
 
-  @Patch(':me')
+  @Patch('me')
   update(@Req() req, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(req.user.id, updateUserDto);
   }
@@ -52,6 +42,16 @@ export class UsersController {
   @Post('find')
   findByEmailOrName(@Body() findUserDto: FindUserDto) {
     return this.usersService.findByEmailOrName(findUserDto);
+  }
+
+  @Get(':username')
+  findOneByUsername(@Param('username') username: string) {
+    return this.usersService.findOneByUsername(username);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    return this.usersService.findOne(id);
   }
 
   @Delete(':id')

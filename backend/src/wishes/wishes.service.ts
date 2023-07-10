@@ -81,6 +81,7 @@ export class WishesService {
       image: existanceCheck.image,
       price: existanceCheck.price,
       copied: existanceCheck.copied + 1,
+      owner: existanceCheck.owner,
     };
     const copyWish = await this.create(user, copyWishDto);
     return `Желание ${copyWish.name} скопировано`;
@@ -88,26 +89,20 @@ export class WishesService {
 
   async findLast(): Promise<Array<Wish>> {
     return await this.wishRepo.find({
+      relations: ['owner'],
       take: 40,
       order: {
         createdAt: 'desc',
-      },
-      relations: {
-        owner: true,
-        offers: true,
       },
     });
   }
 
   async findTop(): Promise<Array<Wish>> {
     return await this.wishRepo.find({
+      relations: ['owner'],
       take: 20,
       order: {
         copied: 'desc',
-      },
-      relations: {
-        owner: true,
-        offers: true,
       },
     });
   }

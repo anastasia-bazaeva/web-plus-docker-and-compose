@@ -6,7 +6,7 @@ export const AppDataSource = new DataSource({
   port: 5432,
   username: 'student',
   password: 'student',
-  database: 'kupipodariday',
+  database: 'postgres',
   synchronize: true,
   entities: ['src/**/**/entity.ts'],
   migrations: [],

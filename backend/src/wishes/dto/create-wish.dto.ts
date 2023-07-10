@@ -1,4 +1,6 @@
 import { IsString, Length, IsNotEmpty, IsUrl, IsInt } from 'class-validator';
+import { Offer } from 'src/offers/entities/offer.entity';
+import { User } from 'src/users/entities/user.entity';
 
 export class CreateWishDto {
   @Length(1, 250)
@@ -18,9 +20,14 @@ export class CreateWishDto {
   @IsNotEmpty()
   price: number;
 
-  @IsInt()
-  raised?: number;
-
   @Length(1, 1024)
   description?: string;
+
+  owner: User;
+
+  offers?: Offer[];
+
+  copied?: number;
+
+  raised?: number;
 }
