@@ -41,6 +41,10 @@ export class UsersService {
     return this.userRepo.find();
   }
 
+  findOneById(id: number) {
+    return this.userRepo.findOneBy({ id });
+  }
+
   findOne(query: FindOneOptions<User>) {
     return this.userRepo.findOne(query);
   }
@@ -106,10 +110,6 @@ export class UsersService {
     return this.findMany({
       where: [{ username: query }, { email: query }],
     });
-  }
-
-  findOneById(id: number) {
-    return this.userRepo.findOneBy({ id });
   }
 
   remove(id: number) {

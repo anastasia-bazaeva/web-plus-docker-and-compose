@@ -42,7 +42,8 @@ export class UsersController {
 
   @Post('find')
   findByEmailOrName(@Body() findUserDto: FindUserDto) {
-    return this.usersService.findByEmailOrName(findUserDto);
+    const { query } = findUserDto;
+    return this.usersService.findByEmailOrName(query);
   }
 
   @Get(':username')
@@ -52,7 +53,7 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.usersService.findOne(id);
+    return this.usersService.findOneById(id);
   }
 
   @Delete(':id')
