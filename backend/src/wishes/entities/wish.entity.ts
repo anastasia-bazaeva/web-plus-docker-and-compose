@@ -68,7 +68,6 @@ export class Wish {
   copied: number;
 
   @ManyToOne(() => User, (user) => user.wishes)
-  @JoinColumn()
   owner: User;
 
   @OneToMany(() => Offer, (offer) => offer.item)
