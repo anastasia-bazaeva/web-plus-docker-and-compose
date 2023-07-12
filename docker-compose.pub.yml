@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  backend:
+    container_name: backend
+    build: 
+      context: backend
+      dockerfile: Dockerfile.pub
+    image: backend-release:1.0
+    env_file: .env
+    ports:
+      - '4000:3001'
+    depends_on:
+      - postgres
+    restart: always
+    networks:
+      - backend
+
+  frontend:
+    container_name: frontend
+    build: 
+      context: frontend
+      dockerfile: Dockerfile.pub
+    image: frontend-release:1.0
+    env_file: .env
+    ports:
+      - '8081:3000'
+    networks:
+      - frontend
+  
+  postgres:
+    container_name: postgres
+    image: postgres:14-alpine
+    env_file: .env
+    volumes: 
+      - postgres_data:/var/lib/postgresql/data/pgdata
+    networks:
+      - backend
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+    networks:
+      - backend
+volumes:
+  postgres_data:/var/lib/postgresql/data/pgdata
+networks:
+  backend:
+  frontend:
