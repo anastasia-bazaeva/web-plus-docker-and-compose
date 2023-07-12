@@ -10,6 +10,7 @@ import {
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { JwtGuard } from 'src/auth/guard';
+import { CustomReq } from 'src/utils/request-with-user';
 
 @UseGuards(JwtGuard)
 @Controller('offers')
@@ -17,7 +18,7 @@ export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
   @Post()
-  create(@Req() req, @Body() createOfferDto: CreateOfferDto) {
+  create(@Req() req: CustomReq, @Body() createOfferDto: CreateOfferDto) {
     return this.offersService.create(req.user, createOfferDto);
   }
 

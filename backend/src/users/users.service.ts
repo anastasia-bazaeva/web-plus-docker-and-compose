@@ -6,10 +6,9 @@ import {
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { WishesService } from 'src/wishes/wishes.service';
 import { BadRequestException } from 'src/utils/bad-request';
-import { FindUserDto } from './dto/find-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -22,7 +21,12 @@ export class UsersService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto) {
-    const userExistance = await this.findByEmailOrName(createUserDto);
+    const userExistance = await this.findOne({
+      where: [
+        { email: createUserDto.email },
+        { username: createUserDto.username },
+      ],
+    });
     if (userExistance)
       throw new ForbiddenException(
         'Пользователь с таким логином или почтой уже зарегистрирован',
@@ -37,8 +41,12 @@ export class UsersService {
     return this.userRepo.find();
   }
 
-  findOne(id: number) {
-    return this.userRepo.findOneBy({ id });
+  findOne(query: FindOneOptions<User>) {
+    return this.userRepo.findOne(query);
+  }
+
+  findMany(query: FindManyOptions<User>) {
+    return this.userRepo.find(query);
   }
 
   findOneByUsername(username: string) {
@@ -53,13 +61,20 @@ export class UsersService {
   }
 
   async findMysWishes(id: number) {
-    const me = await this.findOne(id);
+    const me = await this.findOne({
+      where: { id },
+      relations: {
+        wishes: { owner: true },
+      },
+    });
     if (!me) throw new NotFoundException('Пользователь не найден');
-    return this.wishesService.findWishesById(id);
+    return me.wishes;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.findOne(id);
+    const user = await this.findOne({
+      where: { id },
+    });
     let ifMatched = false;
     let hashedPassword = null;
     if (updateUserDto.password) {
@@ -79,7 +94,7 @@ export class UsersService {
     if (updateUserDto) {
       try {
         await this.userRepo.update(id, updateUserDto);
-        return this.findOne(id);
+        return this.userRepo.findOneBy({ id });
       } catch (err) {
         throw new BadRequestException();
       }
@@ -87,18 +102,14 @@ export class UsersService {
     return 'Нечего обновлять';
   }
 
-  findByEmailOrName(findUserDto: FindUserDto) {
-    const { email, username } = findUserDto;
-    if (!findUserDto) {
-      throw new BadRequestException();
-    } else if (email && username) {
-      return this.userRepo.findOne({
-        where: { email: email, username: username },
-      });
-    } else if (!email) {
-      return this.findOneByUsername(username);
-    }
-    return this.userRepo.findOneBy({ email });
+  findByEmailOrName(query: string) {
+    return this.findMany({
+      where: [{ username: query }, { email: query }],
+    });
+  }
+
+  findOneById(id: number) {
+    return this.userRepo.findOneBy({ id });
   }
 
   remove(id: number) {

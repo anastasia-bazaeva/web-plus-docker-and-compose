@@ -14,14 +14,16 @@ import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
 import { JwtGuard } from 'src/auth/guard';
 import { LocalGuard } from 'src/auth/local.guard';
+import { CustomReq } from 'src/utils/request-with-user';
 
 @Controller('wishes')
 export class WishesController {
   constructor(private readonly wishesService: WishesService) {}
 
   @Post()
-  create(@Req() req, @Body() createWishDto: CreateWishDto) {
-    return this.wishesService.create(req.user, createWishDto);
+  create(@Req() req: CustomReq, @Body() createWishDto: CreateWishDto) {
+    //console.log(req.user);
+    return this.wishesService.create(req.user.id, createWishDto);
   }
 
   @Get()
@@ -47,7 +49,7 @@ export class WishesController {
   @Patch(':id')
   update(
     @Param('id') id: number,
-    @Req() req,
+    @Req() req: CustomReq,
     @Body() updateWishDto: UpdateWishDto,
   ) {
     return this.wishesService.update(id, req.user.id, updateWishDto);

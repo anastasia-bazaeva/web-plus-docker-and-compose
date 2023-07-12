@@ -14,6 +14,7 @@ import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { JwtGuard } from 'src/auth/guard';
 import { LocalGuard } from 'src/auth/local.guard';
+import { CustomReq } from 'src/utils/request-with-user';
 
 @Controller('wishlists')
 export class WishlistsController {
@@ -21,7 +22,7 @@ export class WishlistsController {
 
   @UseGuards(LocalGuard)
   @Post()
-  create(@Req() req, @Body() createWishlistDto: CreateWishlistDto) {
+  create(@Req() req: CustomReq, @Body() createWishlistDto: CreateWishlistDto) {
     return this.wishlistsService.create(req.user, createWishlistDto);
   }
 
@@ -39,7 +40,7 @@ export class WishlistsController {
   @Patch(':id')
   update(
     @Param('id') id: number,
-    @Req() req,
+    @Req() req: CustomReq,
     @Body() updateWishlistDto: UpdateWishlistDto,
   ) {
     return this.wishlistsService.update(id, req.user, updateWishlistDto);
@@ -47,7 +48,7 @@ export class WishlistsController {
 
   @UseGuards(LocalGuard)
   @Delete(':id')
-  remove(@Param('id') id: number, @Req() req) {
+  remove(@Param('id') id: number, @Req() req: CustomReq) {
     return this.wishlistsService.remove(id, req.user);
   }
 }

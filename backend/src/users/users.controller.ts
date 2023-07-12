@@ -13,6 +13,7 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUserDto } from './dto/find-user.dto';
 import { JwtGuard } from 'src/auth/guard';
+import { CustomReq } from 'src/utils/request-with-user';
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -25,17 +26,17 @@ export class UsersController {
   }
 
   @Get('me')
-  async findMe(@Req() req) {
-    return await this.usersService.findOne(req.user.id);
+  async findMe(@Req() req: CustomReq) {
+    return req.user;
   }
 
   @Get('me/wishes')
-  findMysWishes(@Req() req) {
+  findMysWishes(@Req() req: CustomReq) {
     return this.usersService.findMysWishes(req.user.id);
   }
 
   @Patch('me')
-  update(@Req() req, @Body() updateUserDto: UpdateUserDto) {
+  update(@Req() req: CustomReq, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(req.user.id, updateUserDto);
   }
 

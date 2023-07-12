@@ -2,6 +2,7 @@ import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LocalGuard } from './local.guard';
 import { AuthService } from './auth.service';
+import { CustomReq } from 'src/utils/request-with-user';
 
 @Controller()
 export class AuthController {
@@ -9,7 +10,7 @@ export class AuthController {
 
   @UseGuards(LocalGuard)
   @Post('signin')
-  signin(@Req() req) {
+  signin(@Req() req: CustomReq) {
     return this.authService.auth(req.user);
   }
 

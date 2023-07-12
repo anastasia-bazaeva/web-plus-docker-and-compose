@@ -17,12 +17,14 @@ export class WishesService {
     @InjectRepository(Wish)
     private wishRepo: Repository<Wish>,
   ) {}
-  async create(user: User, createWishDto: CreateWishDto) {
-    console.log(user);
-    console.log(createWishDto);
-    const wish = await this.wishRepo.save(createWishDto);
-    wish.owner = user;
-    return wish;
+  async create(userId: number, createWishDto: CreateWishDto) {
+    // console.log(user);
+    // console.log(createWishDto);
+    const wish = await this.wishRepo.create({
+      ...createWishDto,
+      owner: { id: userId },
+    });
+    return this.wishRepo.save(wish);
   }
 
   findAll() {
@@ -83,7 +85,7 @@ export class WishesService {
       copied: existanceCheck.copied + 1,
       owner: existanceCheck.owner,
     };
-    const copyWish = await this.create(user, copyWishDto);
+    const copyWish = await this.create(user.id, copyWishDto);
     return `Желание ${copyWish.name} скопировано`;
   }
 
