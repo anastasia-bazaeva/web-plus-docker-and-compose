@@ -22,7 +22,7 @@ export class WishesService {
     // console.log(createWishDto);
     const wish = await this.wishRepo.create({
       ...createWishDto,
-      owner: { id: 1 },
+      owner: { id: user.id },
     });
     return this.wishRepo.save(wish);
   }
