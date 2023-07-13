@@ -17,12 +17,12 @@ export class WishesService {
     @InjectRepository(Wish)
     private wishRepo: Repository<Wish>,
   ) {}
-  async create(user, createWishDto: CreateWishDto) {
+  create(id: number, createWishDto: CreateWishDto) {
     // console.log(user);
     // console.log(createWishDto);
-    const wish = await this.wishRepo.create({
+    const wish = this.wishRepo.create({
       ...createWishDto,
-      owner: { id: user.id },
+      owner: { id },
     });
     return this.wishRepo.save(wish);
   }
